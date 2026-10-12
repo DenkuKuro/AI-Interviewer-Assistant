@@ -6,6 +6,7 @@ import { ProblemsModule } from './problems/problems.module.js';
 import { InterviewsModule } from './interviews/interviews.module.js';
 import { MessagesModule } from './messages/messages.module.js';
 import { SubmissionsModule } from './submissions/submissions.module.js';
+import { PrismaModule } from './prisma/prisma.module.js';
 
 @Module({
   imports: [
@@ -13,7 +14,8 @@ import { SubmissionsModule } from './submissions/submissions.module.js';
     ProblemsModule, 
     InterviewsModule, 
     MessagesModule, 
-    SubmissionsModule
+    SubmissionsModule,
+    PrismaModule
   ],
   controllers: [AppController],
   providers: [AppService],
