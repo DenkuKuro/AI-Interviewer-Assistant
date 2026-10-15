@@ -1,10 +1,12 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
 import { CreateProblemDto } from './dto/create-problem.dto.js';
 import { UpdateProblemDto } from './dto/update-problem.dto.js';
 import { PrismaService } from '../prisma/prisma.service.js';
 
 @Injectable()
 export class ProblemsService {
+  private readonly logger = new Logger(ProblemsService.name);
+
   constructor(private readonly prisma: PrismaService) {}
 
 
@@ -13,6 +15,7 @@ export class ProblemsService {
   }
 
   findAll() {
+    this.logger.log('Retrieving problems...')
     return this.prisma.problems.findMany();
     // return `This action returns all problems`;
   }

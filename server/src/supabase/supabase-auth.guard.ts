@@ -12,6 +12,7 @@ export class SupabaseAuthGuard implements CanActivate {
         const req = context.switchToHttp().getRequest();
         const header: string | undefined = req.headers['authorization'];
         const token = header?.startsWith('Bearer ') ? header.slice(7) : null;
+
         if (!token) throw new UnauthorizedException("Missing bearer token");
 
         const { data, error } = await this.supabase.client.auth.getUser(token);
