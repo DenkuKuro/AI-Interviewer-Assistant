@@ -530,7 +530,8 @@ model auth_users {
   sessions                    sessions[]
   webauthn_challenges         webauthn_challenges[]
   webauthn_credentials        webauthn_credentials[]
-  users                       public_users?
+  interviews                  interviews[]
+  problems                    problems[]
 
   @@index([created_at(sort: Desc)], map: "idx_users_created_at_desc")
   @@index([email], map: "idx_users_email")
@@ -590,7 +591,7 @@ model interviews {
   feedback                                         String?
   problems_interviews_problem_idToproblems         problems         @relation("interviews_problem_idToproblems", fields: [problem_id], references: [problem_id], onDelete: NoAction, onUpdate: NoAction)
   problems_interviews_problem_id_user_idToproblems problems         @relation("interviews_problem_id_user_idToproblems", fields: [problem_id, user_id], references: [problem_id, user_id], onDelete: NoAction, onUpdate: NoAction)
-  users                                            public_users     @relation(fields: [user_id], references: [user_id], onDelete: NoAction, onUpdate: NoAction)
+  users                                            auth_users       @relation(fields: [user_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
   messages                                         messages[]
   submissions                                      submissions[]
 
@@ -625,7 +626,7 @@ model problems {
   updated_at                                         DateTime       @default(now()) @db.Timestamptz(6)
   interviews_interviews_problem_idToproblems         interviews[]   @relation("interviews_problem_idToproblems")
   interviews_interviews_problem_id_user_idToproblems interviews[]   @relation("interviews_problem_id_user_idToproblems")
-  users                                              public_users   @relation(fields: [user_id], references: [user_id], onDelete: Cascade, onUpdate: NoAction)
+  users                                              auth_users     @relation(fields: [user_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
   test_cases                                         test_cases?
 
   @@unique([problem_id, user_id])
@@ -660,25 +661,6 @@ model test_cases {
   updated_at      DateTime @default(now()) @db.Timestamptz(6)
   problems        problems @relation(fields: [problem_id], references: [problem_id], onDelete: Cascade, onUpdate: NoAction)
 
-  @@schema("public")
-}
-
-/// This model contains row level security and requires additional setup for migrations. Visit https://pris.ly/d/row-level-security for more info.
-model public_users {
-  user_id       String       @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
-  first_name    String       @db.VarChar
-  middle_name   String?      @default("") @db.VarChar
-  last_name     String       @db.VarChar
-  email         String       @unique
-  user_name     String       @unique @db.VarChar
-  password_hash String
-  created_at    DateTime?    @default(now()) @db.Timestamptz(6)
-  updated_at    DateTime?    @default(now()) @db.Timestamptz(6)
-  interviews    interviews[]
-  problems      problems[]
-  users         auth_users   @relation(fields: [user_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
-
-  @@map("users")
   @@schema("public")
 }
 

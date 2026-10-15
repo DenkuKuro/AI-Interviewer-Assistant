@@ -1,7 +1,8 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards } from '@nestjs/common';
 import { ProblemsService } from './problems.service.js';
 import { CreateProblemDto } from './dto/create-problem.dto.js';
 import { UpdateProblemDto } from './dto/update-problem.dto.js';
+import { SupabaseAuthGuard } from '../supabase/supabase-auth.guard.js';
 
 @Controller('problems')
 export class ProblemsController {
@@ -12,6 +13,7 @@ export class ProblemsController {
     return this.problemsService.create(createProblemDto);
   }
 
+  @UseGuards(SupabaseAuthGuard)
   @Get()
   findAll() {
     return this.problemsService.findAll();
