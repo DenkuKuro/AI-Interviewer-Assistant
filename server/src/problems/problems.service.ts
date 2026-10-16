@@ -21,6 +21,7 @@ export class ProblemsService {
   }
 
   findOne(id: number) {
+    this.logger.log(`Retrieving problem ${id}`)
     return `This action returns a #${id} problem`;
   }
 
