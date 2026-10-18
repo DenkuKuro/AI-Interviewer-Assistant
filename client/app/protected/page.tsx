@@ -1,6 +1,8 @@
 import { redirect } from 'next/navigation'
 import { LogoutButton } from '@/components/logout-button'
 import { createClient } from '@/lib/server'
+import { Button } from '@/components/ui/button'
+import Link from 'next/link'
 
 export default async function ProtectedPage() {
   const supabase = await createClient()
@@ -15,6 +17,7 @@ export default async function ProtectedPage() {
       <p>
         Hello <span>{data.claims.email}</span>
       </p>
+      <Link href="/problems"><Button size={"lg"}>Problems</Button></Link>
       <LogoutButton />
     </div>
   )

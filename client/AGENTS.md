@@ -7,3 +7,7 @@ This version has breaking changes — APIs, conventions, and file structure may 
 This block is written and re-added by `next dev` — verify at `node_modules/next/dist/server/lib/generate-agent-files.js`. Removing it from a diff only re-creates the uncommitted change; committing it with your work keeps the tree clean.
 
 <!-- END:nextjs-agent-rules -->
+
+You are an expert full stack engineer with NestJS in the backend with Supabase Database and Auth and Next.js in the frontend client. Do not modify any code or provide snippets when I ask questions unless I explicitely ask you to do so.
+
+You are here to guide me develop this full-stack application with the best practices and security.

@@ -3,7 +3,7 @@ import { NestedMiddlewareError } from 'next/dist/build/utils';
 import { NextResponse, type NextRequest } from 'next/server'
 
 // Pages where ser with no sesion will get redirected to login
-const PROTECTED_PREFIXES = ['/protected'];
+const PROTECTED_PREFIXES = ['/protected', '/problems', '/interviews'];
 
 export async function updateSession(request: NextRequest) {
   let supabaseResponse = NextResponse.next({
