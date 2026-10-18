@@ -1,31 +1,59 @@
 "use client"
 
-import { useEffect, useState } from "react";
+import { useEffect, useOptimistic, useState, useTransition } from "react";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
-import { SearchIcon } from "lucide-react";
+import { ChevronDownIcon, SearchIcon } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { DIFFICULTIES } from "../types";
 
 const SEARCH_DEBOUNCE_MS = 300;
 
-export function ProblemFilters() {
+type ParamChanges = Record<string, string | string[] | null>;
+
+export function ProblemFilters({ tags }: { tags: string[] }) {
     const router = useRouter();
     const pathname = usePathname();
     const searchParams = useSearchParams();
+    const [, startTransition] = useTransition();
 
     const urlQuery = searchParams.get("q") ?? "";
     const activeDifficulty = searchParams.get("difficulty") ?? "All";
     const [query, setQuery] = useState(urlQuery);
 
-    function updateParams(changes: Record<string, string | null>) {
+    // Show tag checkbox changes immediately while the server re-renders the results
+    const [selectedTags, setSelectedTags] = useOptimistic(searchParams.getAll("tags"));
+    const [tagSearch, setTagSearch] = useState("");
+
+    function updateParams(changes: ParamChanges) {
         const params = new URLSearchParams(searchParams.toString());
+        // Any filter change can shrink the result set, so go back to the first page
+        params.delete("page");
         for (const [key, value] of Object.entries(changes)) {
-            if (value) params.set(key, value);
-            else params.delete(key);
+            params.delete(key);
+            if (Array.isArray(value)) value.forEach((item) => params.append(key, item));
+            else if (value) params.set(key, value);
         }
         const queryString = params.toString();
         router.replace(queryString ? `${pathname}?${queryString}` : pathname, { scroll: false });
+    }
+
+    function toggleTag(tag: string) {
+        const next = selectedTags.includes(tag)
+            ? selectedTags.filter((selected) => selected !== tag)
+            : [...selectedTags, tag];
+        startTransition(() => {
+            setSelectedTags(next);
+            updateParams({ tags: next });
+        });
+    }
+
+    function clearTags() {
+        startTransition(() => {
+            setSelectedTags([]);
+            updateParams({ tags: null });
+        });
     }
 
     // Debounce typing so we don't refetch on every keystroke
@@ -36,9 +64,12 @@ export function ProblemFilters() {
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [query]);
 
+    const visibleTags = tags.filter((tag) => tag.toLowerCase().includes(tagSearch.trim().toLowerCase()));
+    const hasTags = selectedTags.length > 0;
+
     return (
-        <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-            <div className="relative w-full sm:max-w-lg sm:flex-1">
+        <div className="flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">
+            <div className="relative w-full lg:max-w-md lg:flex-1">
                 <SearchIcon className="pointer-events-none absolute top-1/2 left-4 size-4 -translate-y-1/2 text-muted-foreground" />
                 <Input
                     type="search"
@@ -49,7 +80,60 @@ export function ProblemFilters() {
                     className="h-14 rounded-xl bg-card pl-11 text-base md:text-base"
                 />
             </div>
-            <div className="flex gap-2">
+            <div className="flex flex-wrap gap-2">
+                <Popover>
+                    <PopoverTrigger
+                        render={
+                            <Button
+                                type="button"
+                                variant="outline"
+                                className={
+                                    hasTags
+                                        ? "h-14 rounded-xl border-red-600 px-5 text-base font-semibold text-foreground"
+                                        : "h-14 rounded-xl px-5 text-base text-muted-foreground"
+                                }
+                            />
+                        }
+                    >
+                        Topics{hasTags ? ` (${selectedTags.length})` : ""}
+                        <ChevronDownIcon className="size-4" />
+                    </PopoverTrigger>
+                    <PopoverContent className="w-80">
+                        <Input
+                            type="search"
+                            value={tagSearch}
+                            onChange={(event) => setTagSearch(event.target.value)}
+                            placeholder="Filter topics"
+                            aria-label="Filter topics"
+                            className="mb-2 h-9"
+                        />
+                        <div className="max-h-64 overflow-y-auto" role="group" aria-label="Topics">
+                            {visibleTags.length === 0 ? (
+                                <p className="px-2 py-4 text-center text-sm text-muted-foreground">No topics found</p>
+                            ) : (
+                                visibleTags.map((tag) => (
+                                    <label
+                                        key={tag}
+                                        className="flex cursor-pointer items-center gap-2 rounded-md px-2 py-1.5 text-sm hover:bg-muted"
+                                    >
+                                        <input
+                                            type="checkbox"
+                                            checked={selectedTags.includes(tag)}
+                                            onChange={() => toggleTag(tag)}
+                                            className="size-4 accent-red-600"
+                                        />
+                                        {tag}
+                                    </label>
+                                ))
+                            )}
+                        </div>
+                        {hasTags && (
+                            <Button type="button" variant="ghost" size="sm" onClick={clearTags} className="mt-2 w-full">
+                                Clear topics
+                            </Button>
+                        )}
+                    </PopoverContent>
+                </Popover>
                 {["All", ...DIFFICULTIES].map((difficulty) => {
                     const isActive = activeDifficulty === difficulty;
                     return (

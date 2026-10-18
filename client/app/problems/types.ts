@@ -5,7 +5,7 @@ export type Difficulty = (typeof DIFFICULTIES)[number];
 export type ProblemData = {
     id: number,
     title: string,
-    tags: string[],
+    topic_tags: string[],
     difficulty: Difficulty,
     url: string,
 }

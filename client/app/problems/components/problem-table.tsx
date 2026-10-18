@@ -38,8 +38,8 @@ export function ProblemTable({ problems }: { problems: ProblemData[] }) {
                         problems.map((problem) => (
                             <TableRow key={problem.id}>
                                 <TableCell className="px-6 py-6 font-mono text-muted-foreground">{problem.id}</TableCell>
-                                <TableCell className="px-6 py-6 font-semibold">{problem.title}</TableCell>
-                                <TableCell className="px-6 py-6 text-muted-foreground">{problem.tags.join(", ")}</TableCell>
+                                <TableCell className="px-6 py-6 font-semibold whitespace-normal">{problem.title}</TableCell>
+                                <TableCell className="px-6 py-6 text-muted-foreground whitespace-normal">{problem.topic_tags.join(", ")}</TableCell>
                                 <TableCell className={`px-6 py-6 text-xs font-semibold ${DIFFICULTY_STYLES[problem.difficulty] ?? ""}`}>
                                     {problem.difficulty}
                                 </TableCell>
