@@ -1,6 +1,7 @@
 "use client";
 
 import { cn } from "@/lib/utils";
+import Link from "next/link";
 
 // Single entry point for the waitlist CTA. Wire the real feature in here.
 const handleJoinWaitlist = () => {
@@ -21,17 +22,19 @@ type JoinWaitlistButtonProps = {
 
 export function JoinWaitlistButton({ variant = "primary", className }: JoinWaitlistButtonProps) {
   return (
-    <button
-      type="button"
-      onClick={handleJoinWaitlist}
-      className={cn(
-        "inline-flex cursor-pointer items-center justify-center whitespace-nowrap rounded-lg font-semibold transition-colors",
-        "focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#FF4D52]",
-        variants[variant],
-        className,
-      )}
-    >
-      Join the waitlist
-    </button>
+    <Link href={'auth/login'}>
+      <button
+        type="button"
+        onClick={handleJoinWaitlist}
+        className={cn(
+          "inline-flex cursor-pointer items-center justify-center whitespace-nowrap rounded-lg font-semibold transition-colors",
+          "focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#FF4D52]",
+          variants[variant],
+          className,
+        )}
+      >
+        Join the waitlist
+      </button>
+    </Link>
   );
 }
