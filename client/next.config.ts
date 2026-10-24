@@ -5,6 +5,9 @@ const nextConfig: NextConfig = {
   cacheComponents: false,
   partialPrefetching: false,
   reactCompiler: true,
+  experimental: {
+    agentUpgrade: "security",
+  },
   turbopack: {
     rules: {
       "*.css": {
