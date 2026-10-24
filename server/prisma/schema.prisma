@@ -621,7 +621,7 @@ model problems {
   title                                              String         @db.VarChar(200)
   description                                        String
   source_url                                         String?
-  source_type                                        problem_source
+  source_type                                        problem_source @default(manual)
   created_at                                         DateTime       @default(now()) @db.Timestamptz(6)
   updated_at                                         DateTime       @default(now()) @db.Timestamptz(6)
   interviews_interviews_problem_idToproblems         interviews[]   @relation("interviews_problem_idToproblems")
