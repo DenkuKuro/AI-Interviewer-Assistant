@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="400" height="470" viewBox="0 0 200 235" role="img" aria-label="Quacky">
+<ellipse cx="100" cy="222" rx="52" ry="7" fill="#000" opacity="0.35"/>
+<path transform="translate(0,26)" d="M80 168v22M80 190l-10 6M80 190l10 6M122 168v22M122 190l-10 6M122 190l10 6" stroke="#F2A33A" stroke-width="5" stroke-linecap="round" fill="none"/>
+<g transform="scale(1,1.15)">
+<path d="M100 18C52 18 26 58 26 108v54q0 12 12 12h128q12 0 12-12v-52C178 58 148 18 100 18z" fill="#1B2350"/>
+<path d="M112 44c34 0 58 26 58 66v58H50c2-58 24-124 62-124z" fill="#F6F6F4"/>
+<path d="M44 92c-2 14 0 30 6 42" stroke="#2E3A78" stroke-width="4" stroke-linecap="round" fill="none"/>
+</g>
+<g transform="translate(0,14)">
+<circle cx="94" cy="94" r="7" fill="#121212"/>
+<circle cx="142" cy="94" r="7" fill="#121212"/>
+<circle cx="96.5" cy="91.5" r="2.2" fill="#fff"/>
+<circle cx="144.5" cy="91.5" r="2.2" fill="#fff"/>
+<path d="M100 112c10-6 40-8 64-2-18 10-48 14-64 8-4-2-4-4 0-6z" fill="#F28C28"/>
+<path d="M104 116c18 2 38 0 56-6" stroke="#C96A12" stroke-width="2" stroke-linecap="round" fill="none"/>
+</g>
+</svg>

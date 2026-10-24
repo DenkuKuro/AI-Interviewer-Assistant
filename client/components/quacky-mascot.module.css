@@ -1,0 +1,111 @@
+/* All animated parts use their own bounding box as the transform reference. */
+.foot,
+.upperBody,
+.wing,
+.eyes {
+  transform-box: fill-box;
+}
+
+/* Feet: each lifts once per 3s cycle, left then right. */
+.footLeft {
+  transform-origin: 50% 100%;
+  animation: step-left 3s ease-in-out infinite;
+}
+
+.footRight {
+  transform-origin: 50% 100%;
+  animation: step-right 3s ease-in-out infinite;
+}
+
+/* Upper body sways around its bottom center while stepping, still otherwise. */
+.upperBody {
+  transform-origin: 50% 100%;
+  animation: sway 3s ease-in-out infinite;
+}
+
+/* Wing: two quick flaps every 5s, pivoting near its top. */
+.wing {
+  transform-origin: 50% 5%;
+  animation: flap 5s ease-in-out infinite;
+}
+
+/* Eyes: blink every 4s. */
+.eyes {
+  transform-origin: 50% 50%;
+  animation: blink 4s ease-in-out infinite;
+}
+
+@keyframes step-left {
+  0%,
+  20%,
+  100% {
+    transform: translateY(0);
+  }
+  10% {
+    transform: translateY(-6px);
+  }
+}
+
+@keyframes step-right {
+  0%,
+  40%,
+  60%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-6px);
+  }
+}
+
+@keyframes sway {
+  0%,
+  20%,
+  40%,
+  60%,
+  100% {
+    transform: rotate(0deg);
+  }
+  10% {
+    transform: rotate(1.5deg);
+  }
+  50% {
+    transform: rotate(-1.5deg);
+  }
+}
+
+@keyframes flap {
+  0%,
+  80%,
+  88%,
+  96%,
+  100% {
+    transform: rotate(0deg);
+  }
+  84%,
+  92% {
+    transform: rotate(28deg);
+  }
+}
+
+@keyframes blink {
+  0%,
+  92%,
+  98%,
+  100% {
+    transform: scaleY(1);
+  }
+  95% {
+    transform: scaleY(0.1);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .footLeft,
+  .footRight,
+  .upperBody,
+  .wing,
+  .eyes {
+    animation: none;
+  }
+}
