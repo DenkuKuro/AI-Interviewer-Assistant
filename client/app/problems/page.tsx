@@ -5,6 +5,7 @@ import { redirect } from "next/navigation";
 import { ProblemFilters } from "./components/problem-filters";
 import { ProblemPagination } from "./components/problem-pagination";
 import { ProblemTable } from "./components/problem-table";
+import { SavedProblems } from "./components/saved-problems";
 import type { ProblemData } from "./types";
 import { filterProblems, PAGE_SIZE, paginate, parseQuery, type ProblemQuery } from "./utils";
 
@@ -69,6 +70,7 @@ export default async function ProblemsPage(props: PageProps<"/problems">) {
                 <h1 className="text-5xl">Problems</h1>
                 <h2 className="text-3xl">Pick a problem to start a mock interview.</h2>
             </div>
+            <SavedProblems/>
             <div className="mb-6">
                 <ProblemFilters tags={tags} />
             </div>

@@ -32,7 +32,8 @@ export type ProblemContent = {
 }
 
 export type SavedProblem = {
-    id: string;
+    id: number;
     name: string;
-    description: string;
+    difficulty: Difficulty;
+    savedAt: string;
 }
