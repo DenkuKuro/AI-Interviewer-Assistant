@@ -1,6 +1,9 @@
 "use client";
 
-import type { Difficulty } from "../types";
+import { useState } from "react";
+import type { Difficulty, SavedProblem } from "../types";
+
+const INITIAL_VISIBLE = 6;
 
 const DIFFICULTY_COLORS: Record<Difficulty, string> = {
     Easy: "text-[#5CC8A8]",
@@ -23,9 +26,9 @@ function formatSavedDate(savedAt: string | Date) {
     });
 }
 
-export function SavedProblemCard({ id, name, difficulty, savedAt }: SavedProblemCardProps) {
+function SavedProblemCard({ id, name, difficulty, savedAt }: SavedProblemCardProps) {
     return (
-        <div className="flex flex-col gap-2.5 rounded-xl border border-[#2A2A2A] bg-[#131313] px-[18px] py-4">
+        <div className="flex flex-col gap-2.5 rounded-xl border border-[#2A2A2A] bg-[#131313] px-4.5 py-4">
             <div className="flex items-baseline justify-between gap-2">
                 <span className="font-mono text-[13px] text-[#8C8C8C]">#{id}</span>
                 <span className="text-xs text-[#8C8C8C]">Saved {formatSavedDate(savedAt)}</span>
@@ -41,6 +44,33 @@ export function SavedProblemCard({ id, name, difficulty, savedAt }: SavedProblem
                     Start →
                 </button>
             </div>
+        </div>
+    )
+}
+
+export function SavedProblemsList({ problems }: { problems: SavedProblem[] }) {
+    const [showAll, setShowAll] = useState(false);
+    const visible = showAll ? problems : problems.slice(0, INITIAL_VISIBLE);
+
+    return (
+        <div className="mb-6">
+            <div className="grid grid-cols-[repeat(auto-fill,minmax(240px,1fr))] gap-3">
+                {visible.map((problem) => (
+                    <SavedProblemCard
+                        key={problem.id}
+                        {...problem}
+                    />
+                ))}
+            </div>
+            {problems.length > INITIAL_VISIBLE && (
+                <button
+                    type="button"
+                    onClick={() => setShowAll((prev) => !prev)}
+                    className="mt-4 cursor-pointer rounded-sm text-sm font-semibold text-[#FF6B6E] hover:underline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#FF6B6E]"
+                >
+                    {showAll ? "Show less" : `Show more (${problems.length - INITIAL_VISIBLE})`}
+                </button>
+            )}
         </div>
     )
 }

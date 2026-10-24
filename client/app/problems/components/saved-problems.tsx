@@ -1,7 +1,7 @@
 import { createClient } from "@/lib/server";
 import { redirect } from "next/navigation";
 import { SavedProblem } from "../types";
-import { SavedProblemCard } from "./saved-problem-card";
+import { SavedProblemsList } from "./saved-problems-list";
 
 
 const mockSavedProblems: SavedProblem[] = [
@@ -46,14 +46,5 @@ export async function SavedProblems() {
   const problems = await getSavedProblems(access_token);
 
 
-  return (
-    <div className="grid grid-cols-[repeat(auto-fill,minmax(240px,1fr))] gap-3 mb-6">
-      {problems.map((problem) => (
-        <SavedProblemCard
-          key={problem.id}
-          {...problem}
-        />
-      ))}
-    </div>
-  )
+  return <SavedProblemsList problems={problems} />
 }
