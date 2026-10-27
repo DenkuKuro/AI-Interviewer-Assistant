@@ -6,46 +6,37 @@ import { ProblemFilters } from "./components/problem-filters";
 import { ProblemPagination } from "./components/problem-pagination";
 import { ProblemTable } from "./components/problem-table";
 import { SavedProblems } from "./components/saved-problems";
-import type { ProblemData } from "./types";
-import { filterProblems, PAGE_SIZE, paginate, parseQuery, type ProblemQuery } from "./utils";
+import { getProblemPage, getTags } from "./leetcode";
+import type { Tag } from "./types";
+import { PAGE_SIZE, parseQuery, totalPagesFor, type ProblemQuery } from "./utils";
 
-// The external API has no combined title/difficulty/topic filter, so fetch the (cached) full list and filter here
-async function getProblems(query: ProblemQuery): Promise<ProblemData[]> {
-    const baseUrl = process.env.PROBLEMS_API_URL;
-    if (!baseUrl) throw new Error("PROBLEMS_API_URL is not set");
-
-    const response = await fetch(baseUrl, { next: { revalidate: 3600 } });
-    if (!response.ok) throw new Error(`Failed to load problems (${response.status})`);
-    const problems: ProblemData[] = await response.json();
-
-    return filterProblems(problems, query);
-}
-
-// Topic names for the filter, most common first. Falls back to no options if the API is unavailable.
-async function getTags(): Promise<string[]> {
-    const baseUrl = process.env.PROBLEMS_API_URL;
-    if (!baseUrl) return [];
+// Topics for the filter. Falls back to no options if LeetCode is unavailable.
+async function getTagOptions(): Promise<Tag[]> {
     try {
-        const response = await fetch(new URL("/tags", baseUrl), { next: { revalidate: 86400 } });
-        if (!response.ok) return [];
-        const tags: { name: string }[] = await response.json();
-        return tags.map((tag) => tag.name);
+        return await getTags();
     } catch {
         return [];
     }
 }
 
 async function ProblemResults({ query }: { query: ProblemQuery }) {
-    const matching = await getProblems(query);
-    const { page, totalPages, items } = paginate(matching, query.page);
+    let page = query.page;
+    let { total, problems } = await getProblemPage(query, page);
+
+    // A stale or hand-edited ?page=999 shows the last page instead of an empty table
+    const totalPages = totalPagesFor(total);
+    if (page > totalPages) {
+        page = totalPages;
+        ({ total, problems } = await getProblemPage(query, page));
+    }
 
     return (
         <>
-            <ProblemTable problems={items} />
+            <ProblemTable problems={problems} />
             <ProblemPagination
                 page={page}
                 totalPages={totalPages}
-                totalItems={matching.length}
+                totalItems={total}
                 pageSize={PAGE_SIZE}
                 filters={query}
             />
@@ -62,7 +53,7 @@ export default async function ProblemsPage(props: PageProps<"/problems">) {
   }
 
   const query = parseQuery(await props.searchParams)
-  const tags = await getTags()
+  const tags = await getTagOptions()
 
     return (
         <div className="flex flex-col h-full mx-auto w-full max-w-5xl px-6">

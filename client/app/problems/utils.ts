@@ -1,4 +1,4 @@
-import { DIFFICULTIES, type Difficulty, type ProblemData } from "./types";
+import { DIFFICULTIES, type Difficulty } from "./types";
 
 const MAX_QUERY_LENGTH = 100;
 const MAX_TAGS = 10;
@@ -9,6 +9,7 @@ export const PAGE_SIZE = 20;
 export type ProblemQuery = {
     q?: string,
     difficulty?: Difficulty,
+    // topic slugs, e.g. "hash-table"
     tags: string[],
     page: number,
 }
@@ -29,20 +30,6 @@ export function parseQuery(params: Record<string, string | string[] | undefined>
     };
 }
 
-// The external API has no combined title/difficulty/topic filter, so filter the full list here
-export function filterProblems(problems: ProblemData[], { q, difficulty, tags }: ProblemQuery): ProblemData[] {
-    const needle = q?.toLowerCase();
-    return problems.filter((problem) =>
-        (!difficulty || problem.difficulty === difficulty) &&
-        (!needle || problem.title.toLowerCase().includes(needle)) &&
-        // a problem must have every selected topic
-        tags.every((tag) => problem.topic_tags.includes(tag))
-    );
-}
-
-// Clamps the page so a stale or hand-edited ?page=999 shows the last page instead of an empty table
-export function paginate<T>(items: T[], requestedPage: number) {
-    const totalPages = Math.max(1, Math.ceil(items.length / PAGE_SIZE));
-    const page = Math.min(requestedPage, totalPages);
-    return { page, totalPages, items: items.slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE) };
+export function totalPagesFor(totalItems: number) {
+    return Math.max(1, Math.ceil(totalItems / PAGE_SIZE));
 }

@@ -11,6 +11,11 @@ export type ProblemData = {
     url: string,
 }
 
+export type Tag = {
+    name: string,
+    slug: string,
+}
+
 export type codeSnippet = {
     lang: string,
     langSlug: string,
