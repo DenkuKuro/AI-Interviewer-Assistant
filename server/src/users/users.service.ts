@@ -20,6 +20,16 @@ export class UsersService {
     return `This action returns a #${id} user`;
   }
 
+  findUserProblems(id: string) {
+    return this.prisma.problems.findMany({
+      where: {
+        user_id: {
+          equals: id
+        }
+      }
+    })
+  }
+
   update(id: number, updateUserDto: UpdateUserDto) {
     return `This action updates a #${id} user`;
   }

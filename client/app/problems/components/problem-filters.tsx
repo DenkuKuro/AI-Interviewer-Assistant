@@ -6,13 +6,13 @@ import { ChevronDownIcon, SearchIcon } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
-import { DIFFICULTIES } from "../types";
+import { DIFFICULTIES, type Tag } from "../types";
 
 const SEARCH_DEBOUNCE_MS = 300;
 
 type ParamChanges = Record<string, string | string[] | null>;
 
-export function ProblemFilters({ tags }: { tags: string[] }) {
+export function ProblemFilters({ tags }: { tags: Tag[] }) {
     const router = useRouter();
     const pathname = usePathname();
     const searchParams = useSearchParams();
@@ -22,7 +22,7 @@ export function ProblemFilters({ tags }: { tags: string[] }) {
     const activeDifficulty = searchParams.get("difficulty") ?? "All";
     const [query, setQuery] = useState(urlQuery);
 
-    // Show tag checkbox changes immediately while the server re-renders the results
+    // Selected tag slugs. Show checkbox changes immediately while the server re-renders the results
     const [selectedTags, setSelectedTags] = useOptimistic(searchParams.getAll("tags"));
     const [tagSearch, setTagSearch] = useState("");
 
@@ -64,7 +64,7 @@ export function ProblemFilters({ tags }: { tags: string[] }) {
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [query]);
 
-    const visibleTags = tags.filter((tag) => tag.toLowerCase().includes(tagSearch.trim().toLowerCase()));
+    const visibleTags = tags.filter((tag) => tag.name.toLowerCase().includes(tagSearch.trim().toLowerCase()));
     const hasTags = selectedTags.length > 0;
 
     return (
@@ -113,16 +113,16 @@ export function ProblemFilters({ tags }: { tags: string[] }) {
                             ) : (
                                 visibleTags.map((tag) => (
                                     <label
-                                        key={tag}
+                                        key={tag.slug}
                                         className="flex cursor-pointer items-center gap-2 rounded-md px-2 py-1.5 text-sm hover:bg-muted"
                                     >
                                         <input
                                             type="checkbox"
-                                            checked={selectedTags.includes(tag)}
-                                            onChange={() => toggleTag(tag)}
+                                            checked={selectedTags.includes(tag.slug)}
+                                            onChange={() => toggleTag(tag.slug)}
                                             className="size-4 accent-red-600"
                                         />
-                                        {tag}
+                                        {tag.name}
                                     </label>
                                 ))
                             )}
